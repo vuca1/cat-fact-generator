@@ -1,5 +1,7 @@
 import datetime
 import tkinter as tk
+from fileinput import filename
+
 import requests
 
 #gets cat facts from API
@@ -14,7 +16,7 @@ def get_cat_fact():
 
 #saves facts into text file
 date = datetime.datetime.now()
-def save_to_file(facts, filename = f"{date.year}-{date.month}-{date.day} cat_facts.txt"):
+def safe_facts(facts, filename =f"{date.year}-{date.month}-{date.day} cat_facts.txt"):
     try:
         with open(filename, "w", encoding = "utf-8") as file:
             for i in facts:
@@ -34,9 +36,18 @@ def main():
     action_label = tk.Label(window, text="Click the button for a cat fact!", wraplength=350, justify="center")
     action_label.pack(pady=20)
 
+    fact = get_cat_fact()
     def show_fact():
-        fact = get_cat_fact()
         fact_label.config(text=fact)
+
+    def safe_fact():
+        try:
+            current_date = datetime.datetime.now()
+            with open(f"{current_date.year}-{current_date.month}-{current_date.day} cat_fact.txt", "w", encoding="utf-8") as file:
+                file.write(fact)
+        except Exception as e:
+            print(f"Error occurred while saving file: {e}")
+
 
     # adds button to get the fact
     get_fact_button = tk.Button(window, text="Get Cat Fact", command=show_fact)
@@ -45,6 +56,10 @@ def main():
     # add label with cat fact
     fact_label = tk.Label(window, text="", wraplength=350, justify="center", fg="dark orange")
     fact_label.pack(pady=20)
+
+    #add button to save the fact in the file
+    save_to_file_button = tk.Button(window, text="Save Fact to File", command=safe_fact)
+    save_to_file_button.pack(pady=10)
 
     # initiates the loop
     window.mainloop()
