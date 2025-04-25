@@ -1,3 +1,5 @@
+import datetime
+import tkinter as tk
 import requests
 
 #gets cat facts from API
@@ -11,7 +13,8 @@ def get_cat_fact():
         return f"Error: {e}"
 
 #saves facts into text file
-def save_to_file(facts, filename = "cat_facts.txt"):
+date = datetime.datetime.now()
+def save_to_file(facts, filename = f"{date.year}-{date.month}-{date.day} cat_facts.txt"):
     try:
         with open(filename, "w", encoding = "utf-8") as file:
             for i in facts:
@@ -21,7 +24,32 @@ def save_to_file(facts, filename = "cat_facts.txt"):
         print(f"Error occurred while saving {filename}: {e}")
 
 def main():
-    print("Welcome to Cat Fact Generator!")
+
+    # creates the main window
+    window = tk.Tk()
+    window.title("My Cat Fact Generator")
+    window.geometry("400x200")
+
+    # adds label for the fact
+    action_label = tk.Label(window, text="Click the button for a cat fact!", wraplength=350, justify="center")
+    action_label.pack(pady=20)
+
+    def show_fact():
+        fact = get_cat_fact()
+        fact_label.config(text=fact)
+
+    # adds button to get the fact
+    get_fact_button = tk.Button(window, text="Get Cat Fact", command=show_fact)
+    get_fact_button.pack()
+
+    # add label with cat fact
+    fact_label = tk.Label(window, text="", wraplength=350, justify="center", fg="dark orange")
+    fact_label.pack(pady=20)
+
+    # initiates the loop
+    window.mainloop()
+
+    """print("Welcome to Cat Fact Generator!")
 
     #user inputs a number of facts
     try:
@@ -44,7 +72,7 @@ def main():
     #asks user if to save to files
     do_save = input("Would you like to save the facts into file? [yes/no]")
     if do_save in ["yes", "y"]:
-        save_to_file(facts)
+        save_to_file(facts)"""
 
 #only run the main() function if this file is being run directly — not if it's being imported somewhere else
 #always use 'main() guard' to prevent unwanted run while imported
